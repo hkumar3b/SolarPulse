@@ -17,10 +17,12 @@ async function handleResponse<T>(res: Response): Promise<T> {
 export function fetchPortfolio(
   from?: string,
   to?: string,
+  threshold?: number,
 ): Promise<PortfolioResponse> {
   const params = new URLSearchParams();
   if (from) params.set("from", from);
   if (to) params.set("to", to);
+  if (threshold !== undefined) params.set("threshold", threshold.toString());
   return fetch(`${BASE_URL}/portfolio?${params}`).then((res) =>
     handleResponse<PortfolioResponse>(res),
   );
@@ -30,10 +32,12 @@ export function fetchPlantDetail(
   plantId: string,
   from?: string,
   to?: string,
+  threshold?: number,
 ): Promise<PlantDetailResponse> {
   const params = new URLSearchParams();
   if (from) params.set("from", from);
   if (to) params.set("to", to);
+  if (threshold !== undefined) params.set("threshold", threshold.toString());
   return fetch(`${BASE_URL}/plants/${plantId}?${params}`).then((res) =>
     handleResponse<PlantDetailResponse>(res),
   );

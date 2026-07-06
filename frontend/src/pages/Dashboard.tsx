@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { fetchPortfolio, fetchPlantDetail } from "../api/client";
 import type { PortfolioResponse, PlantDetailResponse } from "../types/api";
-import { KPICards } from "../components/KPICards.tsx";
-import { PlantTable } from "../components/PlantTable.tsx";
-import { PowerChart } from "../components/PowerChart.tsx";
+import { KPICards } from "../components/KPICards";
+import { PlantTable } from "../components/PlantTable";
+import { PowerChart } from "../components/PowerChart";
+import { ThresholdSlider } from "../components/ThresholdSlider";
 
 export function Dashboard() {
   const [portfolio, setPortfolio] = useState<PortfolioResponse | null>(null);
@@ -14,30 +15,29 @@ export function Dashboard() {
   const [selectedInverterId, setSelectedInverterId] = useState<string | null>(
     null,
   );
+  const [threshold, setThreshold] = useState(0.85);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Load portfolio once on mount
+  // Reload portfolio whenever threshold changes (not just on mount)
   useEffect(() => {
-    fetchPortfolio()
+    setLoading(true);
+    fetchPortfolio(undefined, undefined, threshold)
       .then((data) => {
         setPortfolio(data);
-        // auto-select the worst-performing plant so the operator sees the problem immediately
-        if (data.plants.length > 0) {
-          const worst = [...data.plants].sort(
-            (a, b) => (a.performanceRatio ?? 1) - (b.performanceRatio ?? 1),
-          )[0];
-          setSelectedPlantId(worst.plantId);
-        }
+        const worst = [...data.plants].sort(
+          (a, b) => (a.performanceRatio ?? 1) - (b.performanceRatio ?? 1),
+        )[0];
+        if (worst) setSelectedPlantId(worst.plantId);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [threshold]);
 
-  // Load plant detail whenever selected plant changes
+  // Reload plant detail whenever plant OR threshold changes
   useEffect(() => {
     if (!selectedPlantId) return;
-    fetchPlantDetail(selectedPlantId)
+    fetchPlantDetail(selectedPlantId, undefined, undefined, threshold)
       .then((data) => {
         setPlantDetail(data);
         const worstInv = [...data.inverters].sort(
@@ -46,7 +46,7 @@ export function Dashboard() {
         setSelectedInverterId(worstInv?.inverterId ?? null);
       })
       .catch((err) => setError(err.message));
-  }, [selectedPlantId]);
+  }, [selectedPlantId, threshold]);
 
   if (loading) return <div>Loading portfolio...</div>;
   if (error) return <div style={{ color: "red" }}>Error: {error}</div>;
@@ -67,6 +67,7 @@ export function Dashboard() {
         selectedPlantId={selectedPlantId}
         onSelectPlant={setSelectedPlantId}
       />
+      <ThresholdSlider threshold={threshold} onChange={setThreshold} />
 
       {plantDetail && (
         <div style={{ marginTop: "24px" }}>
