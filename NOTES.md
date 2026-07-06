@@ -1,7 +1,7 @@
 # NOTES.md — SolarPulse Prototype
 
 **Start time:** [06-July-2026 1:19 PM]
-**Stop time:** [06-July-2026 1:19 PM]
+**Stop time:** [06-July-2026 3:43 PM]
 
 ## 1. Assumptions & Trade-offs:
 
