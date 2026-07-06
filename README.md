@@ -21,7 +21,7 @@ No database setup required — telemetry data is loaded from `telemetry.csv` int
 ```bash
 cd backend
 npm install
-npm run start
+npm run dev
 ```
 
 The API starts on **http://localhost:3001**. You should see a console log confirming how many telemetry rows were loaded (and how many were skipped, if any were malformed).
@@ -45,10 +45,18 @@ The dashboard starts on **http://localhost:5173**. Open it in your browser.
 [FILL IN — describe how auth works, e.g.:]
 The dashboard is protected by a simple hardcoded-credential login.
 
-- **mail:** `admin@gmail.com`
-- **Password:** `admin1`
+- **Username:** `[FILL IN]`
+- **Password:** `[FILL IN]`
 
 > Note: this is a basic in-memory auth check added beyond the assignment's required scope, mainly to demonstrate the pattern. It is not production-grade — no password hashing, session persistence, or role-based access control.
+
+## How to Use
+
+1. On load, the dashboard auto-selects the **worst-performing plant** and its **worst-performing inverter**, so the most urgent issue is visible immediately — no clicking required to see what needs attention.
+2. **Click any row in the plant table** to drill down into that plant's inverters.
+3. Once a plant is selected, use the **dropdown above the chart** to switch between its inverters — each option shows a ✅/🔴 status and its PR at a glance.
+4. The **time-series chart** updates to show actual vs. expected power (kW) for whichever inverter is selected, with orange markers on any hour that reported a `FAULT` status.
+5. Drag the **threshold slider** at the top to see how the alert count and flagged inverters change as the underperformance cutoff moves — useful for exploring how sensitive the portfolio is to the alert definition.
 
 ## API Endpoints
 
