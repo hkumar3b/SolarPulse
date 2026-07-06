@@ -6,16 +6,18 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ReferenceDot,
   ResponsiveContainer,
 } from "recharts";
 import type { InverterDetail } from "../types/api";
 
 export function PowerChart({ inverter }: { inverter: InverterDetail }) {
-  // Format timestamps for a readable x-axis (e.g. "06-20 14:00")
   const data = inverter.timeSeries.map((point) => ({
     ...point,
     label: point.timestamp.slice(5, 16).replace("T", " "),
   }));
+
+  const faultPoints = data.filter((d) => d.status === "FAULT");
 
   return (
     <div style={{ marginTop: "16px" }}>
@@ -31,9 +33,9 @@ export function PowerChart({ inverter }: { inverter: InverterDetail }) {
             ✅ Healthy (PR: {inverter.performanceRatio.toFixed(2)})
           </span>
         )}
-        {inverter.statusBreakdown.FAULT > 0 && (
+        {faultPoints.length > 0 && (
           <span style={{ color: "#e65100", marginLeft: "8px" }}>
-            ⚠ {inverter.statusBreakdown.FAULT} FAULT reading(s)
+            ⚠ {faultPoints.length} FAULT reading(s) — marked in orange below
           </span>
         )}
       </div>
@@ -65,6 +67,18 @@ export function PowerChart({ inverter }: { inverter: InverterDetail }) {
             strokeWidth={2}
             dot={false}
           />
+          {faultPoints.map((point) => (
+            <ReferenceDot
+              key={point.timestamp}
+              x={point.label}
+              y={point.actualKw}
+              r={7}
+              fill="#e65100"
+              stroke="#fff"
+              strokeWidth={2}
+              ifOverflow="extendDomain"
+            />
+          ))}
         </ComposedChart>
       </ResponsiveContainer>
     </div>

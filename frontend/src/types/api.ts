@@ -4,6 +4,7 @@ export interface PlantSummary {
   expectedKwh: number;
   performanceRatio: number | null;
   alertCount: number;
+  hasFault: boolean;
 }
 
 export interface PortfolioResponse {
@@ -20,6 +21,7 @@ export interface TimeSeriesPoint {
   actualKw: number;
   expectedKw: number;
   irradiance: number;
+  status: "OK" | "FAULT" | "OFFLINE";
 }
 
 export interface InverterDetail {

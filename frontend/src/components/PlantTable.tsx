@@ -49,7 +49,13 @@ export function PlantTable({
                 : "N/A"}
             </td>
             <td style={{ padding: "8px" }}>
-              {plant.alertCount > 0 ? `🔴 ${plant.alertCount}` : "—"}
+              {plant.alertCount > 0 && `🔴 ${plant.alertCount} `}
+              {plant.hasFault && plant.alertCount == 0 && (
+                <span style={{ color: "#e65100" }}>⚠ FAULT</span>
+              )}
+              {plant.alertCount === 0 && !plant.hasFault && (
+                <span style={{ color: "#1c5e02ff" }}>✅ Healthy</span>
+              )}
             </td>
           </tr>
         ))}

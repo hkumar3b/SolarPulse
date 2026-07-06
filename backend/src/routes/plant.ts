@@ -41,6 +41,7 @@ plantRouter.get("/plants/:plantId", (req, res) => {
           actualKw: r.acPowerKw,
           expectedKw: r.expectedPowerKw,
           irradiance: r.irradianceWm2,
+          status: r.status,
         }))
         .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 

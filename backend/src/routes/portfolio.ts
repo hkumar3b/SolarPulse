@@ -26,6 +26,7 @@ portfolioRouter.get("/portfolio", (req, res) => {
       const plantRows = filterDateRange(getRowsForPlant(plantId), from, to);
       const qualifying = qualifyingRows(plantRows);
       const pr = calcPR(qualifying);
+      const hasFault = plantRows.some((r) => r.status === "FAULT");
 
       let alertCount = 0;
       for (const invId of getInverterIdsForPlant(plantId)) {
@@ -40,6 +41,7 @@ portfolioRouter.get("/portfolio", (req, res) => {
         expectedKwh: sumKw(qualifying, "expectedPowerKw"),
         performanceRatio: pr,
         alertCount,
+        hasFault,
       };
     });
 
