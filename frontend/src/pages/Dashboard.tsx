@@ -5,8 +5,10 @@ import { KPICards } from "../components/KPICards";
 import { PlantTable } from "../components/PlantTable";
 import { PowerChart } from "../components/PowerChart";
 import { ThresholdSlider } from "../components/ThresholdSlider";
+import { useAuth } from "../context/AuthContext";
 
 export function Dashboard() {
+  const { user, logout } = useAuth();
   const [portfolio, setPortfolio] = useState<PortfolioResponse | null>(null);
   const [selectedPlantId, setSelectedPlantId] = useState<string | null>(null);
   const [plantDetail, setPlantDetail] = useState<PlantDetailResponse | null>(
@@ -58,7 +60,15 @@ export function Dashboard() {
 
   return (
     <div style={{ padding: "24px", fontFamily: "sans-serif" }}>
-      <h1>🌞 SolarPulse Control Room</h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h1>🌞 SolarPulse Control Room</h1>
+        {user && (
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <span>Logged in as <strong>{user.email}</strong></span>
+            <button onClick={logout}>Log Out</button>
+          </div>
+        )}
+      </div>
 
       <KPICards portfolio={portfolio} />
 

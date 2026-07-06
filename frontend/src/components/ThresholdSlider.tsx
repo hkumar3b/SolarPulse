@@ -3,6 +3,10 @@ export function ThresholdSlider({ threshold, onChange }: Props) {
   const [localValue, setLocalValue] = useState(threshold);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  useEffect(() => {
+    setLocalValue(threshold);
+  }, [threshold]);
+
   const handleSlide = (value: number) => {
     setLocalValue(value); // updates the displayed number instantly
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -36,12 +40,12 @@ export function ThresholdSlider({ threshold, onChange }: Props) {
         min={0.5}
         max={1.0}
         step={0.05}
-        value={threshold}
-        onChange={(e) => onChange(parseFloat(e.target.value))}
+        value={localValue}
+        onChange={(e) => handleSlide(parseFloat(e.target.value))}
         style={{ width: "160px" }}
       />
       <span style={{ fontWeight: "bold", minWidth: "48px" }}>
-        {(threshold * 100).toFixed(0)}%
+        {(localValue * 100).toFixed(0)}%
       </span>
     </div>
   );
