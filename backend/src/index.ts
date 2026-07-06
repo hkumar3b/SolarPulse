@@ -1,0 +1,14 @@
+import express from "express";
+import cors from "cors";
+import { loadTelemetry } from "./db";
+import { portfolioRouter } from "./routes/portfolio";
+
+loadTelemetry("../telemetry.csv"); // adjust path to wherever you keep the CSV
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use("/api", portfolioRouter);
+
+const PORT = 3001;
+app.listen(PORT, () => console.log(`SolarPulse API running on port ${PORT}`));
