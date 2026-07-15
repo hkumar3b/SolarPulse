@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { fetchPortfolio, fetchPlantDetail } from "../api/client";
-import type { PortfolioResponse, PlantDetailResponse } from "../types/api";
+import { fetchPortfolio, fetchPlantDetail, fetchAlerts } from "../api/client";
+import type { PortfolioResponse, PlantDetailResponse, AlertItem } from "../types/api";
 import { KPICards } from "../components/KPICards";
 import { PlantTable } from "../components/PlantTable";
 import { PowerChart } from "../components/PowerChart";
 import { ThresholdSlider } from "../components/ThresholdSlider";
+import { AlertsPanel } from "../components/AlertsPanel";
 import { useAuth } from "../context/AuthContext";
 
 export function Dashboard() {
@@ -20,6 +21,14 @@ export function Dashboard() {
   const [threshold, setThreshold] = useState(0.85);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [alerts, setAlerts] = useState<AlertItem[]>([]);
+
+  // Reload alerts whenever threshold changes
+  useEffect(() => {
+    fetchAlerts(undefined, undefined, threshold)
+      .then(setAlerts)
+      .catch((err) => console.error("Failed to fetch alerts:", err));
+  }, [threshold]);
 
   // Reload portfolio whenever threshold changes (not just on mount)
   useEffect(() => {
@@ -71,6 +80,7 @@ export function Dashboard() {
       </div>
 
       <KPICards portfolio={portfolio} />
+      <AlertsPanel alerts={alerts} />
 
       <PlantTable
         portfolio={portfolio}

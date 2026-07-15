@@ -48,10 +48,15 @@ export function fetchPlantDetail(
   }).then((res) => handleResponse<PlantDetailResponse>(res));
 }
 
-export function fetchAlerts(from?: string, to?: string): Promise<AlertItem[]> {
+export function fetchAlerts(
+  from?: string,
+  to?: string,
+  threshold?: number,
+): Promise<AlertItem[]> {
   const params = new URLSearchParams();
   if (from) params.set("from", from);
   if (to) params.set("to", to);
+  if (threshold !== undefined) params.set("threshold", threshold.toString());
   return fetch(`${BASE_URL}/alerts?${params}`, {
     headers: getHeaders(),
   }).then((res) => handleResponse<AlertItem[]>(res));
